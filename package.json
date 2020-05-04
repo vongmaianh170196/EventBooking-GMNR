@@ -4,7 +4,9 @@
   "description": "Event booking web application",
   "main": "server.js",
   "scripts": {
-    "start": "nodemon server.js"
+    "server": "nodemon server.js",
+    "client": "npm start --prefix client",
+    "dev": "concurrently \"npm run server\" \"npm run client\""
   },
   "author": "Anh Vo",
   "license": "MIT",
@@ -17,6 +19,7 @@
     "mongoose": "^5.9.9"
   },
   "devDependencies": {
+    "concurrently": "^5.2.0",
     "nodemon": "^2.0.3"
   }
 }
