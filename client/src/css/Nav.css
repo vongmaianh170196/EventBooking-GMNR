@@ -14,15 +14,22 @@
 .nav-bar ul{
     display: flex;
     list-style: none;
+    align-items: center;
 }
 .nav-bar li {
     margin: 0 1rem;
 
 }
-.nav-bar a{
+.nav-bar a,
+.nav-bar button{
     text-decoration: none;
-    color: black
+    color: black;
+    border: none;
+    background-color: transparent;
+    cursor: pointer;
+    font: inherit;
 }
-.nav-bar a:hover, .nav-bar a:active, .nav-bar a.active{
+.nav-bar a:hover, .nav-bar a:active, .nav-bar a.active,
+.nav-bar button:hover, .nav-bar button:active, .nav-bar button.active{
     
 }

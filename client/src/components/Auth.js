@@ -1,8 +1,11 @@
-import React, {useState} from 'react'
+import React, {useState, useContext} from 'react'
 import '../css/Auth.css';
+import AuthContext from '../context/auth-context'
 import axios from 'axios'
 
-export const Auth = () => {
+export const Auth = (props) => {
+    
+    const authContext = useContext(AuthContext)
     const [formData, setFormData] = useState({
         email: '',
         password: ''
@@ -33,7 +36,7 @@ export const Auth = () => {
                 }
             `
         }
-        if(!isSignedUp){
+        if(!isSignedUp){            
             query = {                
                 query: `
                 mutation {
@@ -47,14 +50,17 @@ export const Auth = () => {
         }
         try {
             const res = await axios.post('/graphql', JSON.stringify(query), config)
-            const errors = res.data.errors
+            const resData = res.data
+            const errors = resData.errors
             if(errors){
                 errors.forEach(err => {
                     alert(err.message)
                 });
             }
             else{
-                console.log(res.data)
+               if(resData.data.auth.token){
+                 authContext.login(resData.data.auth.token, resData.data.auth.userId, resData.data.auth.tokenExpiration)
+               }
             }
         } catch (error) {
             console.log(error)
