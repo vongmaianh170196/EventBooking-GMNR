@@ -6,3 +6,37 @@
     width: 30rem;
     max-width: 80%;
 }
+
+
+.events-list {
+    width: 40rem;
+    max-width: 90%;
+    margin: 2rem auto;
+    list-style: none;
+    padding: 0;
+  }
+  
+  .events-list-item {
+    margin: 1rem 0;
+    padding: 1rem;
+    border: 1px solid #5101d1;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .events-list-item h1 {
+    margin: 0;
+    font-size: 1.5rem;
+    color: #5101d1;
+  }
+  
+  .events-list-item h2 {
+      margin: 0;
+      font-size: 1rem;
+      color: #7c7c7c;
+  }
+  
+  .events-list-item p {
+      margin: 0;
+  }

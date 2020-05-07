@@ -1,6 +1,7 @@
 
 const Event = require('../../models/Event')
 const User = require('../../models/User')
+const {dateToString} = require('../../helpers/date')
 
 
 const transformedBooking = booking => {
@@ -9,8 +10,8 @@ const transformedBooking = booking => {
         _id: booking._doc._id,                
         user: getUserById.bind(this, booking._doc.user),
         event: getEventById.bind(this, booking._doc.event),
-        createdAt: dateToString(booking._doc._createdAt),
-        updatedAt: dateToString(booking._doc._updatedAt)
+        createdAt: dateToString(booking.createdAt),
+        updatedAt:  dateToString(booking.updatedAt)
     }
 }
 const transformedEvent = event => {

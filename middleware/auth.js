@@ -36,10 +36,13 @@ module.exports = (req, res, next) => {
             req.isAuth = false;
             return next()
         }
+        else{
+            req.isAuth = true;
+            req.userId = decoded.userId;
+        }
     }catch(err){
         res.status(401).json({msg: "Token is not valid"})
     }
-    req.isAuth = true;
-    req.userId = decoded.userId;
+   
     next();
 }
