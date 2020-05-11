@@ -82,8 +82,8 @@ export const Events = () => {
          }
         let query = {
             query: `
-                mutation {
-                    createEvent(eventInput:{title: "${title}", description: "${description}", price: ${parseFloat(price)}, date: "${date}"}){
+                mutation CreateEvent($title: String!, $description: String!, $price: Float!, $date: String!){
+                    createEvent(eventInput:{title: $title, description: $description, price: $price, date: $date}){
                         _id
                         title,
                         description,
@@ -95,7 +95,13 @@ export const Events = () => {
                         }
                     }
                 }
-            `
+            `,
+            variables:{
+                title: title,
+                description: description,
+                price: parseFloat(price),
+                date: date
+            }
         }
         try {
             const res = await axios.post('/graphql', JSON.stringify(query), config)
@@ -117,21 +123,23 @@ export const Events = () => {
     const onBookEvent = async () => {
         let query = {
             query: `
-                mutation {
-                  bookEvent(eventId: "${selectedEvent._id}") {
+                mutation BookEvent($eventId: ID!){
+                  bookEvent(eventId: $eventId) {
                     _id
                    createdAt
                    updatedAt
                   }
                 }
-              `
+              `, 
+              variables: {
+                  eventId: selectedEvent._id
+              }
           };
         try {
             const res = await axios.post('/graphql', 
                 JSON.stringify(query), 
                 config
             )
-            console.log(res.data)
             setSelectedEvent(null)
         } catch (error) {
             console.log(error)

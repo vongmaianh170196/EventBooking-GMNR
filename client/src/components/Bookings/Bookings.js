@@ -1,6 +1,8 @@
 import React, {useState, useEffect, useContext} from 'react';
 import axios from 'axios'
-import AuthContext from '../context/auth-context'
+import AuthContext from '../../context/auth-context'
+import '../../css/Booking.css'
+import { BookingItem } from './BookingItem';
 
 export const Bookings = () => {
     const context = useContext(AuthContext)
@@ -45,11 +47,43 @@ export const Bookings = () => {
             }
             fetchBookings();            
         }
-    }, [isLoaded])
+    }, [isLoaded, context.token])
+
+    const deleteBookingItem = async bookingId => {
+        let query = {
+            query: `
+                mutation CancelBooking($id: ID!){
+                    cancelBooking(bookingId: $id){
+                        _id
+                       title
+                    }
+                }
+            `,
+            variables:{
+                id: bookingId
+            }
+        }
+        try {
+            const res = await axios.post('/graphql', 
+                JSON.stringify(query), 
+                {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'x-auth-token': context.token
+                    }
+                }
+            )
+            
+            return loadBookings(bookings.filter(ele => ele._id !== bookingId))
+        } catch (error) {
+            console.log(error)
+        }
+    
+    }
     return (
         <div>
             <ul>
-    {bookings.map(booking => <li key={booking._id}>{booking.event.title}</li>)}
+                {bookings.map(booking => <BookingItem key={booking._id} booking={booking} onCancel={deleteBookingItem}/>)}
             </ul>
         </div>
     )

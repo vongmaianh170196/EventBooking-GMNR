@@ -27,25 +27,33 @@ export const Auth = (props) => {
         
         let query = {
             query: `
-                query {
-                    auth(email: "${email}", password: "${password}"){
-                        userId
-                        token
-                        tokenExpiration
-                    }
+            query Login($email: String!, $password: String!) {
+                auth(email: $email, password: $password) {
+                  userId
+                  token
+                  tokenExpiration
                 }
-            `
-        }
+              }
+            `,
+            variables: {
+              email: email,
+              password: password
+            }
+        };
         if(!isSignedUp){            
             query = {                
                 query: `
-                mutation {
-                    createUser(userInput:{email: "${email}", password: "${password}"}){
+                mutation Register($email: String!, $password: String!){
+                    createUser(userInput:{email: $email, password: $password}){
                         _id
                         email
                     }
                 }
-            `
+            `,
+                variables:{
+                  email: email,
+                  password: password  
+                }
             }
         }
         try {
