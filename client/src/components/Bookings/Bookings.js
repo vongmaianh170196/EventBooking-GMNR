@@ -1,5 +1,6 @@
 import React, {useState, useEffect, useContext} from 'react';
 import axios from 'axios'
+import { Bar as BarChart} from 'react-chartjs-2'
 import AuthContext from '../../context/auth-context'
 import '../../css/Booking.css'
 import { BookingItem } from './BookingItem';
@@ -8,6 +9,7 @@ export const Bookings = () => {
     const context = useContext(AuthContext)
     const [isLoaded, loaded] = useState(false);
     const [bookings, loadBookings] = useState([])
+    const [showChart, setShow] = useState(false)
     useEffect(() => {
         if(!isLoaded) {
             const fetchBookings = async () => {
@@ -21,6 +23,7 @@ export const Bookings = () => {
                                    _id
                                    title
                                    date
+                                   price
                                }
                                user{
                                    email
@@ -80,11 +83,63 @@ export const Bookings = () => {
         }
     
     }
+
+    const renderBookingList = () => <ul>
+        {bookings.map(booking => <BookingItem key={booking._id} booking={booking} onCancel={deleteBookingItem}/>)}
+    </ul>
+    const renderBookingChart = () => {
+        const BOOKINGS_BUCKETS = {
+            Cheap: {
+                min: 0,
+                max: 100
+              },
+            Normal: {
+                min: 100,
+                max: 200
+            },
+            Expensive: {
+                min: 200,
+                max: 10000000
+            }
+        }
+        const chartData={labels: [], datasets: []}
+        let values = [];
+        for(const bucket in BOOKINGS_BUCKETS){
+            const filterBookingsCount = bookings.reduce((prev, current) => {
+                if (
+                    current.event.price > BOOKINGS_BUCKETS[bucket].min &&
+                    current.event.price < BOOKINGS_BUCKETS[bucket].max
+                  ) {
+                    return prev + 1;
+                  } else {
+                    return prev;
+                  }
+                }, 0);
+            values.push(filterBookingsCount)
+            chartData.labels.push(bucket);
+            chartData.datasets.push({
+                fillColor: 'rgba(220,220,220,0.5)',
+                strokeColor: 'rgba(220,220,220,0.8)',
+                highlightFill: 'rgba(220,220,220,0.75)',
+                highlightStroke: 'rgba(220,220,220,1)',
+                data: values
+            })
+            values = [...values]
+            values[values.length -1] = 0
+        }
+        console.log(chartData)
+        return  <div style={{ textAlign: 'center' }}>
+                    <BarChart data={chartData} />
+                </div>
+    }
     return (
         <div>
-            <ul>
-                {bookings.map(booking => <BookingItem key={booking._id} booking={booking} onCancel={deleteBookingItem}/>)}
-            </ul>
+            <div className="bookings-control">
+                <button onClick={() => setShow(false)} className={!showChart ? "active" : ''}>List</button>
+                <button onClick={() => setShow(true)} className={showChart ? "active" : '' }>Chart</button>
+            </div>
+           { showChart ? renderBookingChart(): renderBookingList() }
+          
         </div>
     )
 }
